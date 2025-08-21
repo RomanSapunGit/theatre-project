@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 
@@ -6,10 +7,19 @@ class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def __str__(self):
+        return self.full_name
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
 
 class Play(models.Model):
     title = models.CharField(max_length=255)
@@ -17,11 +27,23 @@ class Play(models.Model):
     genres = models.ManyToManyField(Genre, related_name="plays")
     actors = models.ManyToManyField(Actor, related_name="plays")
 
+    class Meta:
+        ordering = ["title"]
+
+    def __str__(self):
+        return self.title
 
 class TheatreHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.PositiveIntegerField()
     seats = models.PositiveIntegerField()
+
+    @property
+    def capacity(self):
+        return self.rows * self.seats
+
+    def __str__(self):
+        return self.name
 
 
 class Performance(models.Model):
@@ -37,6 +59,9 @@ class Performance(models.Model):
     )
     show_time = models.DateTimeField()
 
+    def __str__(self):
+        return f"{self.play.title} {str(self.show_time)}"
+
 
 class Reservation(models.Model):
     created_at = models.DateTimeField()
@@ -45,6 +70,10 @@ class Reservation(models.Model):
         on_delete=models.CASCADE,
         related_name="reservations"
     )
+
+    def __str__(self):
+        return f"Reservation created by {self.user.first_name} at {self.created_at}"
+
 
 class Ticket(models.Model):
     row = models.PositiveIntegerField()
@@ -59,3 +88,51 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         related_name="tickets"
     )
+
+    @staticmethod
+    def validate_ticket(row, seat, performance, error_to_raise):
+        for ticket_attr_value, ticket_attr_name, theatre_hall_attr_name in [
+            (row, "row", "rows"),
+            (seat, "seat", "seats_in_row"),
+        ]:
+            count_attrs = getattr(performance.theatre_hall, theatre_hall_attr_name)
+            if not (1 <= ticket_attr_value <= count_attrs):
+                raise error_to_raise(
+                    {
+                        ticket_attr_name: f"{ticket_attr_name} "
+                                          f"number must be in available range: "
+                                          f"(1, {theatre_hall_attr_name}): "
+                                          f"(1, {count_attrs})"
+                    }
+                )
+
+    class Meta:
+        unique_together = ("performance", "row", "seat")
+        ordering = ["row", "seat"]
+
+
+    def clean(self):
+        Ticket.validate_ticket(
+            self.row,
+            self.seat,
+            self.performance.theatre_hall,
+            ValidationError,
+        )
+
+    def save(
+            self,
+            *args,
+            force_insert=False,
+            force_update=False,
+            using=None,
+            update_fields=None,
+    ):
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
+
+    def __str__(self):
+        return (
+            f"{str(self.performance)} (row: {self.row}, seat: {self.seat})"
+        )
