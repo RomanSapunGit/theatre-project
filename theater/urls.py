@@ -7,6 +7,8 @@ router = routers.DefaultRouter()
 router.register("actors", ActorViewSet)
 router.register("genres", GenreViewSet)
 router.register("plays", PlayViewSet)
+router.register("tickets", PlayViewSet)
+router.register("reservations", PlayViewSet)
 
 urlpatterns = [
     path("", include(router.urls))
