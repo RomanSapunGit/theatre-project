@@ -55,3 +55,11 @@ class ReservationViewSet(ModelViewSet):
     def get_serializer_class(self):
         return ReservationSerializer
 
+
+class TheatreHallViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    queryset = TheatreHall.objects.all()
+    serializer_class = TheatreHallSerializer
