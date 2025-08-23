@@ -1,10 +1,14 @@
-from django.shortcuts import render
-from rest_framework import mixins
+from django.db.models import F, Count
+from rest_framework import mixins, status
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from theater.models import Actor, Genre, Play, Performance, Ticket, Reservation
-from theater.serializers import ActorSerializer, GenreSerializer, PlayDetailSerializer, PlaySerializer, \
-    PerformanceDetailSerializer, PerformanceSerializer, TicketSerializer, TicketDetailSerializer, ReservationSerializer
+from theatre.models import Actor, Genre, Play, Performance, Reservation, TheatreHall
+from theatre.serializers import ActorSerializer, GenreSerializer, PlayDetailSerializer, PlaySerializer, \
+    PerformanceDetailSerializer, PerformanceSerializer, ReservationSerializer, \
+    PerformanceListSerializer, TheatreHallSerializer, ReservationListSerializer, PlayListSerializer, PlayImageSerializer
 
 
 # Create your views here.
@@ -123,15 +127,6 @@ class PerformanceViewSet(ModelViewSet):
         if self.action == "list":
             return PerformanceListSerializer
         return PerformanceSerializer
-
-
-class TicketViewSet(ModelViewSet):
-    queryset = Ticket.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return TicketDetailSerializer
-        return TicketSerializer
 
 
 class ReservationViewSet(ModelViewSet):
