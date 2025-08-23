@@ -69,6 +69,10 @@ class Performance(models.Model):
     )
     show_time = models.DateTimeField()
 
+    class Meta:
+        ordering = ["show_time", "id"]
+
+
     def __str__(self):
         return f"{self.play.title} {str(self.show_time)}"
 
