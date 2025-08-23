@@ -175,6 +175,8 @@ class ReservationSerializer(serializers.ModelSerializer):
 class TicketDetailSerializer(TicketSerializer):
     performance = PerformanceDetailSerializer(read_only=True)
 
+class ReservationListSerializer(ReservationSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
 
 
 class PlayImageSerializer(serializers.ModelSerializer):
