@@ -1,7 +1,6 @@
 from django.db.models import F, Count
 from rest_framework import mixins, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
@@ -11,7 +10,6 @@ from theatre.serializers import ActorSerializer, GenreSerializer, PlayDetailSeri
     PerformanceListSerializer, TheatreHallSerializer, ReservationListSerializer, PlayListSerializer, PlayImageSerializer
 
 
-# Create your views here.
 class ActorViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
