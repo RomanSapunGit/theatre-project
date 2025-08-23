@@ -46,7 +46,13 @@ class GenreViewSet(ModelViewSet):
         return queryset.distinct()
 
 class PlayViewSet(ModelViewSet):
-    queryset = Play.objects.all()
+    queryset = (Play.objects
+    .prefetch_related(
+        "genres",
+        "actors",
+        "performances__theatre_hall"
+    )
+    )
 
     def get_serializer_class(self):
         if self.action == "retrieve":
