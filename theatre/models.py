@@ -46,7 +46,7 @@ class Play(models.Model):
 class TheatreHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.PositiveIntegerField()
-    seats = models.PositiveIntegerField()
+    seats_in_row = models.PositiveIntegerField()
 
     @property
     def capacity(self):
