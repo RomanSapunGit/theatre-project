@@ -14,6 +14,7 @@ def movie_image_file_path(instance, filename):
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    image = models.ImageField(null=True, upload_to=movie_image_file_path)
 
     @property
     def full_name(self):
