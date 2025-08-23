@@ -116,8 +116,7 @@ class PerformanceListSerializer(PerformanceSerializer):
         model = Performance
         fields = (
             "id",
-            "play",
-            "theater_hall_name",
+            "theatre_hall_name",
             "theatre_hall_capacity",
             "show_time",
             "tickets_available",
