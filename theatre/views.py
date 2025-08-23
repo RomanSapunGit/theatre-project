@@ -120,6 +120,8 @@ class PerformanceViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return PerformanceDetailSerializer
+        if self.action == "list":
+            return PerformanceListSerializer
         return PerformanceSerializer
 
 
