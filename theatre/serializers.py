@@ -143,7 +143,8 @@ class TicketDetailSerializer(TicketSerializer):
     performance = PerformanceDetailSerializer(read_only=True)
 
 
-class TicketListSerializer(TicketSerializer):
-    performance = PerformanceListSerializer(
-        many=False, read_only=True
-    )
+
+class PlayImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Play
+        fields = ("id", "image")
