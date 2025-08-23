@@ -148,6 +148,8 @@ class ReservationViewSet(ModelViewSet):
     #     return Reservation.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
+        if self.action == "list":
+            return ReservationListSerializer
         return ReservationSerializer
 
 
