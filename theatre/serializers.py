@@ -101,10 +101,7 @@ class PerformanceDetailSerializer(PerformanceSerializer):
 
 
 class PerformanceListSerializer(PerformanceSerializer):
-    play = serializers.SlugRelatedField(
-        source="title"
-    )
-    theater_hall_name = serializers.CharField(
+    theatre_hall_name = serializers.CharField(
         source="theatre_hall.name", read_only=True
     )
     theatre_hall_capacity = serializers.CharField(
