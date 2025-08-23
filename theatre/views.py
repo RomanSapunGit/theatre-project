@@ -105,7 +105,17 @@ class PlayViewSet(ModelViewSet):
 
 
 class PerformanceViewSet(ModelViewSet):
-    queryset = Performance.objects.all()
+    queryset = (
+        Performance.objects.all()
+        .select_related("play", "theatre_hall")
+        .prefetch_related("tickets")
+        .annotate(
+            tickets_available=(
+                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                    - Count("tickets")
+            )
+        )
+    )
 
     def get_serializer_class(self):
         if self.action == "retrieve":
