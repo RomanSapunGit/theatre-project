@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
@@ -114,9 +117,8 @@ class Ticket(models.Model):
                 raise error_to_raise(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
-                                          f"number must be in available range: "
-                                          f"(1, {theatre_hall_attr_name}): "
-                                          f"(1, {count_attrs})"
+                                          f" number must be in available range: "
+                                          f"(1 to {count_attrs})"
                     }
                 )
 
@@ -129,7 +131,7 @@ class Ticket(models.Model):
         Ticket.validate_ticket(
             self.row,
             self.seat,
-            self.performance.theatre_hall,
+            self.performance,
             ValidationError,
         )
 
