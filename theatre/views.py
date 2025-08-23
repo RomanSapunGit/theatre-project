@@ -51,6 +51,10 @@ class PlayViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return PlayDetailSerializer
+        if self.action == "list":
+            return PlayListSerializer
+        if self.action == "upload_image":
+            return PlayImageSerializer
         return PlaySerializer
 
 
