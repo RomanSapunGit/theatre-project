@@ -135,7 +135,17 @@ class TicketViewSet(ModelViewSet):
 
 
 class ReservationViewSet(ModelViewSet):
-    queryset = Reservation.objects.all()
+    queryset = (Reservation
+    .objects
+    .prefetch_related(
+        "tickets",
+        "tickets__performance",
+        "tickets__performance__play"
+    )
+    )
+
+    # def get_queryset(self):
+    #     return Reservation.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         return ReservationSerializer
