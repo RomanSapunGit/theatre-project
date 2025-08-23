@@ -97,7 +97,7 @@ class PerformanceDetailSerializer(PerformanceSerializer):
 
     class Meta:
         model = Performance
-        fields = ("id", "play", "theatre_hall", "show_time")
+        fields = ("id", "play", "theatre_hall", "show_time", "taken_places")
 
 
 class PerformanceListSerializer(PerformanceSerializer):
