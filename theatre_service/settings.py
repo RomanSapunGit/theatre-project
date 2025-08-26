@@ -151,4 +151,9 @@ REST_FRAMEWORK = {
     }
 }
 
-
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Theatre API",
+    "DESCRIPTION": "Project to book theatre tickets online!",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
