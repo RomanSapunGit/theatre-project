@@ -1,3 +1,4 @@
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -33,4 +34,11 @@ class UserManager(BaseUserManager):
 
 # Create your models here.
 class User(AbstractUser):
-    pass
+    is_hall_overseer = models.BooleanField(default=False)
+    username = None
+    email = models.EmailField("email address", unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
