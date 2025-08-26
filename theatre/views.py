@@ -1,13 +1,39 @@
+from datetime import datetime
+
 from django.db.models import F, Count
-from rest_framework import mixins, status
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from theatre.models import Actor, Genre, Play, Performance, Reservation, TheatreHall
-from theatre.serializers import ActorSerializer, GenreSerializer, PlayDetailSerializer, PlaySerializer, \
-    PerformanceDetailSerializer, PerformanceSerializer, ReservationSerializer, \
-    PerformanceListSerializer, TheatreHallSerializer, ReservationListSerializer, PlayListSerializer, PlayImageSerializer
+from theatre.models import (
+    Actor,
+    Genre,
+    Play,
+    Performance,
+    Reservation,
+    TheatreHall
+)
+from theatre.permissions import (
+    IsAuthorizedOrIfAuthenticatedReadOnly,
+    IsAdminOrIfAuthenticatedReadOnly
+)
+from theatre.serializers import (
+    ActorSerializer,
+    GenreSerializer,
+    PlayDetailSerializer,
+    PlaySerializer,
+    PerformanceDetailSerializer,
+    PerformanceSerializer,
+    ReservationSerializer,
+    PerformanceListSerializer,
+    TheatreHallSerializer,
+    ReservationListSerializer,
+    PlayListSerializer,
+    PlayImageSerializer
+)
 
 
 class ActorViewSet(
@@ -33,8 +59,33 @@ class ActorViewSet(
 
         return queryset.distinct()
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "first_name",
+                type=OpenApiTypes.STR,
+                description="Filter actors by "
+                            "first name "
+                            "(ex. ?first_name=John)",
+            ),
+            OpenApiParameter(
+                "last_name",
+                type=OpenApiTypes.STR,
+                description="Filter actors by "
+                            "last name "
+                            "(ex. ?last_name=Doe)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-class GenreViewSet(ModelViewSet):
+
+class GenreViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
@@ -49,13 +100,33 @@ class GenreViewSet(ModelViewSet):
 
         return queryset.distinct()
 
-class PlayViewSet(ModelViewSet):
-    queryset = (Play.objects
-    .prefetch_related(
-        "genres",
-        "actors",
-        "performances__theatre_hall"
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "name",
+                type=OpenApiTypes.STR,
+                description="Filter genres by name (ex. ?name=Drama)",
+            ),
+        ]
     )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class PlayViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = (
+        Play
+        .objects
+        .prefetch_related(
+            "genres",
+            "actors",
+            "performances__theatre_hall"
+        )
     )
     permission_classes = (IsAuthorizedOrIfAuthenticatedReadOnly,)
 
@@ -72,7 +143,6 @@ class PlayViewSet(ModelViewSet):
         methods=["POST"],
         detail=True,
         url_path="upload-image",
-        # permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
         movie = self.get_object()
@@ -137,13 +207,14 @@ class PlayViewSet(ModelViewSet):
 
 class PerformanceViewSet(ModelViewSet):
     queryset = (
-        Performance.objects.all()
+        Performance
+        .objects
         .select_related("play", "theatre_hall")
         .prefetch_related("tickets")
         .annotate(
             tickets_available=(
-                    F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
-                    - Count("tickets")
+                F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
+                - Count("tickets")
             )
         )
     )
@@ -205,17 +276,21 @@ class PerformanceViewSet(ModelViewSet):
 
 
 class ReservationViewSet(ModelViewSet):
-    queryset = (Reservation
-    .objects
-    .prefetch_related(
-        "tickets",
-        "tickets__performance",
-        "tickets__performance__play"
-    )
-    )
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
 
-    # def get_queryset(self):
-    #     return Reservation.objects.filter(user=self.request.user)
+    def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Reservation.objects.none()
+
+        return (
+            Reservation
+            .objects
+            .filter(user=self.request.user)
+            .prefetch_related(
+                "tickets",
+                "tickets__performance",
+                "tickets__performance__play"
+            ))
 
     def get_serializer_class(self):
         if self.action == "list":
