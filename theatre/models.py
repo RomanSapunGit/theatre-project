@@ -33,6 +33,7 @@ class Genre(models.Model):
     def __str__(self):
         return self.name
 
+
 class Play(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
@@ -46,6 +47,7 @@ class Play(models.Model):
     def __str__(self):
         return self.title
 
+
 class TheatreHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.PositiveIntegerField()
@@ -53,7 +55,7 @@ class TheatreHall(models.Model):
 
     @property
     def capacity(self):
-        return self.rows * self.seats
+        return self.rows * self.seats_in_row
 
     def __str__(self):
         return self.name
@@ -75,7 +77,6 @@ class Performance(models.Model):
     class Meta:
         ordering = ["show_time", "id"]
 
-
     def __str__(self):
         return f"{self.play.title} {str(self.show_time)}"
 
@@ -89,7 +90,9 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return f"Reservation created by {self.user.first_name} at {self.created_at}"
+        return (f"Reservation created by "
+                f"{self.user.first_name} at "
+                f"{self.created_at}")
 
 
 class Ticket(models.Model):
@@ -112,12 +115,16 @@ class Ticket(models.Model):
             (row, "row", "rows"),
             (seat, "seat", "seats_in_row"),
         ]:
-            count_attrs = getattr(performance.theatre_hall, theatre_hall_attr_name)
+            count_attrs = getattr(
+                performance.theatre_hall,
+                theatre_hall_attr_name
+            )
             if not (1 <= ticket_attr_value <= count_attrs):
                 raise error_to_raise(
                     {
                         ticket_attr_name: f"{ticket_attr_name} "
-                                          f" number must be in available range: "
+                                          f" number must be in "
+                                          f"available range: "
                                           f"(1 to {count_attrs})"
                     }
                 )
@@ -125,7 +132,6 @@ class Ticket(models.Model):
     class Meta:
         unique_together = ("performance", "row", "seat")
         ordering = ["row", "seat"]
-
 
     def clean(self):
         Ticket.validate_ticket(
