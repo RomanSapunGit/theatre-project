@@ -57,6 +57,7 @@ class PlayViewSet(ModelViewSet):
         "performances__theatre_hall"
     )
     )
+    permission_classes = (IsAuthorizedOrIfAuthenticatedReadOnly,)
 
     def get_serializer_class(self):
         if self.action == "retrieve":
