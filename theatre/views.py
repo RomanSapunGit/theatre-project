@@ -108,6 +108,32 @@ class PlayViewSet(ModelViewSet):
 
         return queryset.distinct()
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "title",
+                type=OpenApiTypes.STR,
+                description="Filter plays by title (ex. ?title=Hamlet)",
+            ),
+            OpenApiParameter(
+                "genres",
+                type={"type": "array", "items": {"type": "integer"}},
+                description="Filter plays by "
+                            "comma-separated genre ids "
+                            "(ex. ?genres=1,2,3)",
+            ),
+            OpenApiParameter(
+                "actors",
+                type={"type": "array", "items": {"type": "integer"}},
+                description="Filter plays by "
+                            "comma-separated actor ids "
+                            "(ex. ?actors=5,7)",
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class PerformanceViewSet(ModelViewSet):
     queryset = (
