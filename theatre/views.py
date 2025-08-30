@@ -99,6 +99,8 @@ class PlayViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet,
 ):
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PlayFilterSet
     queryset = (
         Play
         .objects
