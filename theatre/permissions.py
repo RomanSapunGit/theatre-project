@@ -24,7 +24,9 @@ class IsAuthorizedOrIfAuthenticatedReadOnly(IsAdminOrIfAuthenticatedReadOnly):
         return (
             self._is_read_only_allowed(request)
             or self._is_admin(request)
-            or (request.user
+            or (
+                request.user
+                and request.user.is_authenticated
                 and request.user.is_hall_overseer
                 )
         )
