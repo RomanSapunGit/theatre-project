@@ -177,6 +177,8 @@ class PerformanceViewSet(ModelViewSet):
         )
     )
     permission_classes = (IsAuthorizedOrIfAuthenticatedReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = PerformanceFilterSet
 
     def get_serializer_class(self):
         if self.action == "retrieve":
