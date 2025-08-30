@@ -168,7 +168,7 @@ class PerformanceViewSet(ModelViewSet):
         Performance
         .objects
         .select_related("play", "theatre_hall")
-        .prefetch_related("tickets")
+        .prefetch_related("tickets", "play__actors", "play__genres")
         .annotate(
             tickets_available=(
                 F("theatre_hall__rows") * F("theatre_hall__seats_in_row")
