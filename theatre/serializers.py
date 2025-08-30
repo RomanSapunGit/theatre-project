@@ -74,6 +74,15 @@ class PerformanceSerializer(serializers.ModelSerializer):
         model = Performance
         fields = ("id", "play", "theatre_hall", "show_time")
 
+    def validate_theatre_hall(self, value):
+        user = self.context["request"].user
+        if user.theatre_hall and value.id != user.theatre_hall.id:
+            raise serializers.ValidationError(
+                f"You cannot assign performance to theatre hall "
+                f"'{value.name}'. Your hall: {user.theatre_hall.name}"
+            )
+        return value
+
 
 class PerformanceDetailSerializer(PerformanceSerializer):
     play = PlayDetailSerializer(read_only=True)
