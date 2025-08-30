@@ -3,7 +3,6 @@
     "model": "user.user",
     "pk": 1,
     "fields": {
-      "username": "user",
       "email": "email@g.com"
     }
   },
@@ -48,6 +47,25 @@
     }
   },
   {
+    "model": "theatre.play",
+    "pk": 2,
+    "fields": {
+      "title": "p",
+      "description": "A Shakespearean tragedy about the Prince of Denmark.",
+      "genres": [2],
+      "actors": [1, 2]
+    }
+  },
+  {
+    "model": "theatre.theatrehall",
+    "pk": 2,
+    "fields": {
+      "name": "Sub Hall",
+      "rows": 10,
+      "seats_in_row": 20
+    }
+  },
+  {
     "model": "theatre.theatrehall",
     "pk": 1,
     "fields": {
@@ -63,6 +81,15 @@
       "play": 1,
       "theatre_hall": 1,
       "show_time": "2025-09-01T19:00:00Z"
+    }
+  },
+  {
+    "model": "theatre.performance",
+    "pk": 2,
+    "fields": {
+      "play": 1,
+      "theatre_hall": 2,
+      "show_time": "2025-09-04T19:00:00Z"
     }
   },
   {
