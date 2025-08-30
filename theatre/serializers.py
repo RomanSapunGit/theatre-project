@@ -107,6 +107,7 @@ class PerformanceListSerializer(PerformanceSerializer):
     tickets_available = serializers.IntegerField(
         read_only=True
     )
+    play = PlaySerializer(read_only=True)
 
     class Meta:
         model = Performance
@@ -116,6 +117,7 @@ class PerformanceListSerializer(PerformanceSerializer):
             "theatre_hall_capacity",
             "show_time",
             "tickets_available",
+            "play"
         )
 
 
