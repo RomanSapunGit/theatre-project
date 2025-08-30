@@ -77,16 +77,8 @@ class GenreViewSet(
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
-
-    def get_queryset(self):
-        name = self.request.query_params.get("name")
-
-        queryset = self.queryset
-
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-
-        return queryset.distinct()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = GenreFilterSet
 
     @extend_schema(
         parameters=[
