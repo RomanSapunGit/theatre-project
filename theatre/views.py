@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from django.db.models import F, Count
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins, status, viewsets
@@ -8,6 +7,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
+from theatre.filters import (
+    PlayFilterSet,
+    PerformanceFilterSet,
+    ActorFilterSet,
+    GenreFilterSet,
+)
 from theatre.models import (
     Actor,
     Genre,
