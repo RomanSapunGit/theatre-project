@@ -19,6 +19,7 @@ class UserAdmin(UserAdmin):
                     "groups",
                     "user_permissions",
                     "is_hall_overseer",
+                    "theatre_hall",
                 )
             },
         ),
