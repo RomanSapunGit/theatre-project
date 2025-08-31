@@ -35,6 +35,14 @@ class UserManager(BaseUserManager):
 # Create your models here.
 class User(AbstractUser):
     is_hall_overseer = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=False)
+    verification_code = models.PositiveIntegerField(null=True, blank=True)
+    verification_code_timeout = models.DateTimeField(null=True, blank=True)
+    theatre_hall = models.OneToOneField(
+        TheatreHall,
+        on_delete=models.CASCADE,
+        null=True
+    )
     username = None
     email = models.EmailField("email address", unique=True)
 
