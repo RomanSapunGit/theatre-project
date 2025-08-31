@@ -2,6 +2,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from theatre.models import TheatreHall
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
