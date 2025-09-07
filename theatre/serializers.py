@@ -107,7 +107,6 @@ class PerformanceListSerializer(PerformanceSerializer):
     tickets_available = serializers.IntegerField(
         read_only=True
     )
-    play = PlaySerializer(read_only=True)
 
     class Meta:
         model = Performance
@@ -122,8 +121,8 @@ class PerformanceListSerializer(PerformanceSerializer):
 
 
 class TicketListSerializer(TicketSerializer):
-    performance = PerformanceListSerializer(
-        many=False, read_only=True
+    performance = serializers.SlugField(
+        read_only=True,
     )
     play_name = serializers.CharField(
         read_only=True,
