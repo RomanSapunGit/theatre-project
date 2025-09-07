@@ -10,3 +10,5 @@ drf-spectacular~=0.28.0
 django-filter~=25.1
 django-environ~=0.12.0
 python-dotenv~=1.1.1
+coverage
+requests~=2.32.5
