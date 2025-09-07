@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ("id", "email", "password", "is_staff", "is_email_verified")
-        read_only_fields = ("is_staff",)
+        read_only_fields = ("is_staff", "is_email_verified")
         extra_kwargs = {"password": {"write_only": True, "min_length": 5}}
 
     def create(self, validated_data):
@@ -28,5 +28,7 @@ class EmailVerificationSerializer(serializers.Serializer):
     def validate_code(self, value):
         user = self.context["request"].user
         if str(user.verification_code) != str(value):
-            raise serializers.ValidationError("Verification code is invalid.")
+            raise serializers.ValidationError(
+                "Verification code does not match."
+            )
         return value
