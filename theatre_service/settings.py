@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "drf_spectacular",
     "django_filters",
+    "schema_viewer"
 ]
 
 MIDDLEWARE = [
@@ -173,3 +174,16 @@ EMAIL_HOST_PASSWORD = os.environ.get(
     "EMAIL_HOST_PASSWORD"
 )
 EMAIL_USE_TLS = True
+
+SCHEMA_VIEWER = {
+    "apps": [
+        "user",
+        "theatre",
+    ],
+    "exclude": {
+        "debug_toolbar": "*",
+        "contenttypes": "*",
+        "sessions": "*",
+        "admin": "*",
+    },
+}
