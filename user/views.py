@@ -35,11 +35,12 @@ class VerifyUserEmailView(APIView):
 
         if user.is_email_verified:
             return Response(
-                {"detail": "Email is already verified."},
+                {"error": "Email is already verified."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if user.verification_code_timeout and user.verification_code_timeout > timezone.now():
+        if (user.verification_code_timeout
+                and user.verification_code_timeout > timezone.now()):
             return Response(
                 {"error": "Email sending timeout is not over yet."},
                 status=status.HTTP_400_BAD_REQUEST
@@ -49,14 +50,19 @@ class VerifyUserEmailView(APIView):
         send_verification_email(user, verification_code)
 
         user.verification_code = verification_code
-        user.verification_code_timeout = timezone.now() + datetime.timedelta(minutes=3)
+        user.verification_code_timeout = (
+            timezone.now() + datetime.timedelta(minutes=3)
+        )
         user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         user = self.get_object()
-        serializer = EmailVerificationSerializer(data=request.data, context={"request": request})
+        serializer = EmailVerificationSerializer(
+            data=request.data,
+            context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
 
         user.is_email_verified = True
