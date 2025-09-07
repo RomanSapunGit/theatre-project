@@ -38,6 +38,7 @@ urlpatterns = ([
          SpectacularRedocView.as_view(url_name="schema"),
          name="redoc"
          ),
+    path("schema-viewer/", include("schema_viewer.urls")),
 ] + debug_toolbar_urls()
     + static(
         settings.MEDIA_URL,
