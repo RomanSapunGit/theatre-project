@@ -91,7 +91,10 @@ The project is designed to demonstrate best practices in Django, DRF, testing, a
     ```
 6. **Load fixtures (sample data)**
     ```python manage.py loaddata theatre_data.json```
-7. **Start development server**
+7. **Create superuser**
+    ```python manage.py createsuperuser_if_not_exists```
+    - It will create superuser with email ```admin@example.com``` (If email not provided via env variables) and password ```supersecret```
+8. **Start development server**
     ```python manage.py runserver```
 
 ### or simply using docker:
@@ -196,3 +199,9 @@ Tests cover:
 4. **Push your branch:**
     ```git push origin feature-branch```
 5. **Create a Pull Request**
+
+# DB schema
+![img.png](img.png)
+
+You can also see the same schema via your localhost:
+http://127.0.0.1:8000/schema-viewer/
